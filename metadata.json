@@ -1,0 +1,6 @@
+{
+  "name": "SkillSwap — Peer-to-Peer Skill Exchange",
+  "description": "Direct, reciprocal skill exchange platform for freelancers, creators, and professionals to trade practical skills with zero payments.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
