@@ -10,7 +10,7 @@ import {
   MapPin, 
   Clock, 
   CheckCircle, 
-  Sparkles,
+  Sparkles, 
   RefreshCw,
   Send,
   Eye,
@@ -18,6 +18,7 @@ import {
   Check
 } from 'lucide-react';
 import { AvatarVisual } from './AvatarVisual';
+import { SkillThumbnail } from './SkillThumbnail';
 
 export const ExplorePage: React.FC = () => {
   const { users, currentUser, openModal, calculateCompatibility } = useApp();
@@ -125,7 +126,7 @@ export const ExplorePage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="w-full space-y-6">
       
       {/* Top Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -318,20 +319,31 @@ export const ExplorePage: React.FC = () => {
             return (
               <div
                 key={peer.id}
-                className="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:border-slate-300 hover:shadow-md transition-all relative overflow-hidden"
+                className="bg-white border border-slate-200 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-slate-300 hover:shadow-md transition-all relative"
               >
-                <div>
-                  {/* Top Bar: Avatar, Details, Rating */}
-                  <div className="flex items-start justify-between gap-4 mb-4">
-                    <div className="flex items-center gap-3.5">
-                      <AvatarVisual
-                        id={peer.id}
-                        name={peer.displayName}
-                        initials={peer.avatarInitials}
-                        gradientClass={peer.avatarColor}
-                        size="lg"
-                        showStatus={true}
-                      />
+                {/* Visual Skill Thumbnail Header */}
+                <div className="relative">
+                  <SkillThumbnail
+                    skillName={peer.skillsOffered[0]?.name || 'Skill Exchange'}
+                    size="md"
+                  />
+                  {/* Overlapping Avatar */}
+                  <div className="absolute -bottom-5 left-5 z-20 p-0.5 bg-white rounded-2xl shadow-xs">
+                    <AvatarVisual
+                      id={peer.id}
+                      name={peer.displayName}
+                      initials={peer.avatarInitials}
+                      gradientClass={peer.avatarColor}
+                      size="lg"
+                      showStatus={true}
+                    />
+                  </div>
+                </div>
+
+                <div className="p-5 pt-8 flex-1 flex flex-col justify-between">
+                  <div>
+                    {/* Top Bar: Details & Rating */}
+                    <div className="flex items-start justify-between gap-4 mb-4">
                       <div>
                         <div className="flex items-center gap-2">
                           <h2 className="text-base font-bold text-slate-900 leading-snug">
@@ -355,18 +367,17 @@ export const ExplorePage: React.FC = () => {
                           <span>{peer.timezone.replace('_', ' ')}</span>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Compatibility Match Indicator */}
-                    {comp && comp.isReciprocalMatch && (
-                      <div className="hidden sm:flex flex-col items-end shrink-0">
-                        <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-2xs">
-                          <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                          Direct Match ({comp.matchPercentage}%)
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                      {/* Compatibility Match Indicator */}
+                      {comp && comp.isReciprocalMatch && (
+                        <div className="hidden sm:flex flex-col items-end shrink-0">
+                          <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-2xs">
+                            <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                            Direct Match ({comp.matchPercentage}%)
+                          </span>
+                        </div>
+                      )}
+                    </div>
 
                   {/* Bio */}
                   <p className="text-xs text-slate-600 leading-relaxed mb-5 line-clamp-3">
@@ -464,8 +475,9 @@ export const ExplorePage: React.FC = () => {
                   </button>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          );
+        })}
         </div>
       )}
 

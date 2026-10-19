@@ -57,7 +57,7 @@ export const DashboardPage: React.FC = () => {
   );
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="w-full space-y-6">
       
       {/* Top Welcome & Reciprocity Overview */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-xs">

@@ -7,6 +7,8 @@ import { RequestsPage } from './components/RequestsPage';
 import { SessionsPage } from './components/SessionsPage';
 import { DashboardPage } from './components/DashboardPage';
 import { OnboardingPage } from './components/OnboardingPage';
+import { LinkedInLeftSidebar } from './components/LinkedInLeftSidebar';
+import { LinkedInRightSidebar } from './components/LinkedInRightSidebar';
 import { SwapProposalModal } from './components/SwapProposalModal';
 import { SessionDetailModal } from './components/SessionDetailModal';
 import { FeedbackModal } from './components/FeedbackModal';
@@ -16,19 +18,41 @@ import { ArrowLeftRight, Heart, ShieldCheck, Sparkles } from 'lucide-react';
 const MainLayout: React.FC = () => {
   const { currentRoute, activeModal, modalPayload, currentUser, navigateTo } = useApp();
 
+  const isFullWidthRoute = currentRoute === '/' || currentRoute === '/onboarding';
+
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-slate-900 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#F3F4F6] text-slate-900 selection:bg-slate-900 selection:text-white">
       {/* Top Bar */}
       <Header />
 
       {/* Main Content Viewport */}
       <main className="flex-1">
-        {currentRoute === '/' && <LandingPage />}
-        {currentRoute === '/explore' && <ExplorePage />}
-        {currentRoute === '/requests' && <RequestsPage />}
-        {currentRoute === '/sessions' && <SessionsPage />}
-        {currentRoute === '/dashboard' && <DashboardPage />}
-        {currentRoute === '/onboarding' && <OnboardingPage />}
+        {isFullWidthRoute ? (
+          <>
+            {currentRoute === '/' && <LandingPage />}
+            {currentRoute === '/onboarding' && <OnboardingPage />}
+          </>
+        ) : (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex flex-col lg:flex-row gap-6 items-start">
+              {/* LinkedIn Left Sidebar */}
+              <LinkedInLeftSidebar />
+
+              {/* Central Feed / Main Viewport */}
+              <div className="flex-1 min-w-0 w-full space-y-6">
+                {currentRoute === '/explore' && <ExplorePage />}
+                {currentRoute === '/requests' && <RequestsPage />}
+                {currentRoute === '/sessions' && <SessionsPage />}
+                {currentRoute === '/dashboard' && <DashboardPage />}
+              </div>
+
+              {/* LinkedIn Right Sidebar (Desktop) */}
+              <div className="hidden xl:block">
+                <LinkedInRightSidebar />
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Active Modal Portals */}
