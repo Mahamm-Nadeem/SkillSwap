@@ -97,11 +97,8 @@ class CancelSessionSerializer(serializers.Serializer):
         if not session:
             return attrs
 
-        if session.status == 'Cancelled':
-            raise serializers.ValidationError("This session is already cancelled.")
-
-        if session.status == 'Completed':
-            raise serializers.ValidationError("Completed sessions cannot be cancelled.")
+        if session.status in ['Cancelled', 'Completed', 'No-Show Reported']:
+            raise serializers.ValidationError(f"A {session.status.lower()} session cannot be cancelled.")
 
         # Enforce 2-hour cutoff rule if session date and time are set
         if session.session_date and session.session_time:

@@ -10,7 +10,7 @@ class SkillListView(generics.ListCreateAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
-        queryset = Skill.objects.all().order_name() if hasattr(Skill.objects, 'order_name') else Skill.objects.all()
+        queryset = Skill.objects.all().order_by('name')
         query = self.request.query_params.get('search', '').strip()
         category = self.request.query_params.get('category', '').strip()
         if query:

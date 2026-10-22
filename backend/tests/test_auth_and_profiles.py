@@ -115,3 +115,30 @@ class AuthAndProfilesTestCase(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(res.data['count'], 1)
         self.assertEqual(res.data['results'][0]['displayName'], 'Figma Teacher')
+
+    def test_update_profile_and_skills_patch(self):
+        user = User.objects.create_user(
+            username='patch_user',
+            email='patch@example.com',
+            password='Password123!',
+            display_name='Patch User',
+            published=True
+        )
+        self.client.force_authenticate(user=user)
+        url = reverse('profile-me')
+        payload = {
+            'headline': 'Updated Headline',
+            'skillsOffered': [
+                {'name': 'BrandNewTeachingSkill', 'level': 'Advanced', 'category': 'Tech'}
+            ],
+            'skillsRequested': [
+                {'name': 'BrandNewLearningSkill', 'level': 'Beginner', 'category': 'Languages'}
+            ]
+        }
+        res = self.client.patch(url, payload, format='json')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        user.refresh_from_db()
+        self.assertEqual(user.headline, 'Updated Headline')
+        self.assertEqual(user.user_skills.filter(skill_type='offered').count(), 1)
+        self.assertEqual(user.user_skills.filter(skill_type='requested').count(), 1)
+        self.assertEqual(user.user_skills.first().skill.name, 'BrandNewTeachingSkill')

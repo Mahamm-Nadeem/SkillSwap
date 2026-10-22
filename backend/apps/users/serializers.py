@@ -171,10 +171,10 @@ class ProfilePublishSerializer(serializers.Serializer):
         # Update offered skills
         user.user_skills.filter(skill_type='offered').delete()
         for item in data['skillsOffered']:
-            skill_obj, _ = Skill.objects.get_or_create(
-                name__iexact=item['name'].strip(),
-                defaults={'name': item['name'].strip(), 'category': item.get('category', 'General')}
-            )
+            skill_name = item['name'].strip()
+            skill_obj = Skill.objects.filter(name__iexact=skill_name).first()
+            if not skill_obj:
+                skill_obj = Skill.objects.create(name=skill_name, category=item.get('category', 'General'))
             UserSkill.objects.create(
                 user=user,
                 skill=skill_obj,
@@ -185,10 +185,10 @@ class ProfilePublishSerializer(serializers.Serializer):
         # Update requested skills
         user.user_skills.filter(skill_type='requested').delete()
         for item in data['skillsRequested']:
-            skill_obj, _ = Skill.objects.get_or_create(
-                name__iexact=item['name'].strip(),
-                defaults={'name': item['name'].strip(), 'category': item.get('category', 'General')}
-            )
+            skill_name = item['name'].strip()
+            skill_obj = Skill.objects.filter(name__iexact=skill_name).first()
+            if not skill_obj:
+                skill_obj = Skill.objects.create(name=skill_name, category=item.get('category', 'General'))
             UserSkill.objects.create(
                 user=user,
                 skill=skill_obj,

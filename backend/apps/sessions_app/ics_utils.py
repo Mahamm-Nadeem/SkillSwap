@@ -1,5 +1,4 @@
-from datetime import datetime, timedelta
-import zoneinfo
+from datetime import datetime, timedelta, timezone
 
 def generate_ics_content(session) -> str:
     """
@@ -12,7 +11,7 @@ def generate_ics_content(session) -> str:
     end_dt = start_dt + timedelta(minutes=session.duration_minutes)
 
     # Format in UTC/Zulu representation
-    dtstamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    dtstamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     dtstart = start_dt.strftime("%Y%m%dT%H%M%SZ")
     dtend = end_dt.strftime("%Y%m%dT%H%M%SZ")
 

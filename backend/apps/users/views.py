@@ -96,6 +96,46 @@ class ProfileUpdateView(APIView):
         if 'avatarColor' in data:
             user.avatar_color = data['avatarColor']
 
+        from apps.skills.models import Skill, UserSkill
+
+        # Handle updating offered skills if provided
+        if 'skillsOffered' in data:
+            offered = data['skillsOffered']
+            if user.published and (len(offered) < 1 or len(offered) > 5):
+                return Response({'skillsOffered': 'Must contain between 1 and 5 skills.'}, status=status.HTTP_400_BAD_REQUEST)
+            user.user_skills.filter(skill_type='offered').delete()
+            for item in offered:
+                s_name = item.get('name', '').strip()
+                if s_name:
+                    s_obj = Skill.objects.filter(name__iexact=s_name).first()
+                    if not s_obj:
+                        s_obj = Skill.objects.create(name=s_name, category=item.get('category', 'General'))
+                    UserSkill.objects.create(
+                        user=user,
+                        skill=s_obj,
+                        skill_type='offered',
+                        level=item.get('level', 'Intermediate')
+                    )
+
+        # Handle updating requested skills if provided
+        if 'skillsRequested' in data:
+            requested = data['skillsRequested']
+            if user.published and (len(requested) < 1 or len(requested) > 5):
+                return Response({'skillsRequested': 'Must contain between 1 and 5 skills.'}, status=status.HTTP_400_BAD_REQUEST)
+            user.user_skills.filter(skill_type='requested').delete()
+            for item in requested:
+                s_name = item.get('name', '').strip()
+                if s_name:
+                    s_obj = Skill.objects.filter(name__iexact=s_name).first()
+                    if not s_obj:
+                        s_obj = Skill.objects.create(name=s_name, category=item.get('category', 'General'))
+                    UserSkill.objects.create(
+                        user=user,
+                        skill=s_obj,
+                        skill_type='requested',
+                        level=item.get('level', 'Intermediate')
+                    )
+
         user.save()
         return Response(UserProfileSerializer(user).data)
 

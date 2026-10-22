@@ -109,10 +109,10 @@ class Command(BaseCommand):
 
         self.stdout.write("Seeding Skills...")
         def add_skill(user, skill_name, category, skill_type, level):
-            skill_obj, _ = Skill.objects.get_or_create(
-                name__iexact=skill_name.strip(),
-                defaults={'name': skill_name.strip(), 'category': category}
-            )
+            name_clean = skill_name.strip()
+            skill_obj = Skill.objects.filter(name__iexact=name_clean).first()
+            if not skill_obj:
+                skill_obj = Skill.objects.create(name=name_clean, category=category)
             UserSkill.objects.create(
                 user=user,
                 skill=skill_obj,
