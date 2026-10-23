@@ -157,3 +157,23 @@ CORS_ALLOWED_ORIGINS = [
     if origin.strip()
 ]
 CORS_ALLOW_CREDENTIALS = True
+# --- Production on Vercel ---
+
+# Vercel terminates TLS; trust its forwarded protocol header.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Needed for /admin login over HTTPS. Example: https://skillswap-api.vercel.app
+CSRF_TRUSTED_ORIGINS = [
+    o.strip()
+    for o in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+    if o.strip()
+]
+
+# Supabase transaction pooler (pgbouncer) does not support server-side cursors.
+if DATABASE_URL:
+    DATABASES['default']['DISABLE_SERVER_SIDE_CURSORS'] = True
+
+# Optional: allow preview deployments of the frontend.
+# Example value: ^https://skillswap-[a-z0-9-]+\.vercel\.app$
+_cors_regex = os.getenv('CORS_ALLOWED_ORIGIN_REGEX', '').strip()
+CORS_ALLOWED_ORIGIN_REGEXES = [_cors_regex] if _cors_regex else []
